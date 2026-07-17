@@ -1,0 +1,745 @@
+<style>
+  /* Dark (navy) is the default theme, matched to the book cover. */
+  :root{
+    --bg:#0A1128;
+    --bg-2:#111A38;
+    --bg-3:#0E1730;
+    --ink:#F5F7FA;
+    --ink-2:#9CA3AF;
+    --ink-3:#8A93A6;
+    --line:#1E2A4A;
+    --accent:#1a73e8;
+    --accent-2:#4a90f0;
+    --accent-ink:#6EA8FF;
+    --accent-soft:rgba(26,115,232,.14);
+    --cta:#2EE59D;
+    --cta-2:#5CF2B8;
+    --cta-text:#0A1128;
+    --good:#2EE59D;
+    --good-soft:rgba(46,229,157,.12);
+    --bad:#F08573;
+    --bad-soft:rgba(240,133,115,.12);
+    --node:#15224A;
+    --shadow:0 1px 2px rgba(2,6,23,.45),0 8px 24px rgba(2,6,23,.4);
+    --shadow-lg:0 2px 4px rgba(2,6,23,.5),0 20px 50px rgba(2,6,23,.6);
+    --radius:14px;
+  }
+  [data-theme="light"]{
+    --bg:#F5F7FA;
+    --bg-2:#FFFFFF;
+    --bg-3:#EAEFF6;
+    --ink:#0A1128;
+    --ink-2:#3D4A63;
+    --ink-3:#66738C;
+    --line:#D8E0EC;
+    --accent:#1a73e8;
+    --accent-2:#1765cc;
+    --accent-ink:#1a73e8;
+    --accent-soft:#E3EDFB;
+    --cta:#2EE59D;
+    --cta-2:#4FF0B0;
+    --cta-text:#0A1128;
+    --good:#177A50;
+    --good-soft:#DFF5EB;
+    --bad:#B3372A;
+    --bad-soft:#F9E6E3;
+    --node:#FFFFFF;
+    --shadow:0 1px 2px rgba(10,17,40,.06),0 8px 24px rgba(10,17,40,.08);
+    --shadow-lg:0 2px 4px rgba(10,17,40,.08),0 20px 50px rgba(10,17,40,.16);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+  img{max-width:100%;height:auto;display:block}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  section{padding:72px 0}
+  @media (max-width:640px){section{padding:52px 0}}
+
+  h1,h2,h3{line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
+  h2{font-size:clamp(26px,4vw,38px);margin-bottom:14px}
+  .kicker{
+    display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);
+    border:1px solid var(--line);background:var(--bg-2);border-radius:999px;
+    padding:6px 14px;margin-bottom:18px;
+  }
+  .lede{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:62ch}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;min-width:0}
+  .brand .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none;box-shadow:0 0 0 4px var(--accent-soft)}
+  .brand span.t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nav-right{display:flex;align-items:center;gap:10px;flex:none}
+  .theme-btn{
+    border:1px solid var(--line);background:var(--bg-2);color:var(--ink);
+    border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:16px;line-height:1;
+  }
+  .theme-btn:hover{border-color:var(--ink-3)}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--cta);color:var(--cta-text);border:none;cursor:pointer;
+    font-weight:700;font-size:16px;padding:15px 28px;border-radius:12px;
+    text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+    box-shadow:0 6px 18px color-mix(in srgb,var(--cta) 30%,transparent);
+  }
+  .btn:hover{background:var(--cta-2);transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn:focus-visible,.theme-btn:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .btn.small{font-size:14px;padding:10px 18px;border-radius:10px;box-shadow:none}
+  .btn .arr{transition:transform .15s ease}
+  .btn:hover .arr{transform:translateX(3px)}
+  .under-btn{font-size:13px;color:var(--ink-3);margin-top:10px}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 80px;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+  .hero h1{font-size:clamp(34px,5.4vw,56px);margin-bottom:18px}
+  .hero h1 em{font-style:normal;color:var(--accent-ink)}
+  .hero .lede{margin-bottom:28px}
+  .hero-ctas{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .price-tag{display:flex;flex-direction:column;line-height:1.2}
+  .price-tag .p{font-size:26px;font-weight:800}
+  .price-tag .s{font-size:12px;color:var(--ink-3)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+  .chip{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
+    border:1px solid var(--line);background:var(--bg-2);color:var(--ink-2);
+    padding:6px 12px;border-radius:999px;
+  }
+  .cover-col{display:flex;flex-direction:column;align-items:center;gap:0}
+  .cover-frame{position:relative;max-width:340px;width:100%}
+  .cover-frame::before{
+    content:"";position:absolute;inset:-14%;z-index:-1;border-radius:50%;
+    background:radial-gradient(closest-side,color-mix(in srgb,var(--cta) 24%,transparent),transparent 70%);
+  }
+  .cover-frame img{
+    border-radius:12px;box-shadow:var(--shadow-lg);
+    transform:rotate(2.5deg);transition:transform .3s ease;
+    border:1px solid var(--line);
+  }
+  .cover-frame:hover img{transform:rotate(0deg) scale(1.02)}
+
+  /* ---------- workflow strip ---------- */
+  .flow{
+    margin-top:64px;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--bg-2);padding:26px 22px;overflow-x:auto;
+  }
+  .flow-title{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+  .flow-track{display:flex;align-items:stretch;gap:0;min-width:640px}
+  .node{
+    flex:1;background:var(--node);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;box-shadow:var(--shadow);position:relative;min-width:110px;
+  }
+  .node .n-icon{font-size:20px;margin-bottom:6px}
+  .node .n-name{font-weight:700;font-size:13.5px}
+  .node .n-sub{font-size:11.5px;color:var(--ink-3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .node.hot{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+  .link-line{flex:none;width:34px;display:flex;align-items:center}
+  .link-line::before{content:"";height:2px;width:100%;background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--accent) 55%,transparent) 0 6px,transparent 6px 11px)}
+  .flow-note{margin-top:16px;font-size:13.5px;color:var(--ink-2)}
+
+  /* ---------- story ---------- */
+  .story{background:var(--bg-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .story-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  @media (max-width:820px){.story-grid{grid-template-columns:1fr}}
+  .story blockquote{
+    font-size:clamp(19px,2.6vw,25px);line-height:1.45;font-weight:600;letter-spacing:-.01em;
+    border-left:4px solid var(--accent);padding-left:22px;text-wrap:balance;
+  }
+  .story .attr{margin-top:18px;padding-left:26px;font-size:14px;color:var(--ink-3)}
+  .fact-list{display:flex;flex-direction:column;gap:14px}
+  .fact{
+    display:flex;gap:14px;background:var(--bg-2);border:1px solid var(--line);
+    border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);
+  }
+  .fact .f-mark{flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:700;color:var(--accent-ink);font-size:13px;padding-top:2px}
+  .fact p{font-size:14.5px;color:var(--ink-2)}
+  .fact p strong{color:var(--ink)}
+
+  /* ---------- build cards ---------- */
+  .build-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin-top:36px}
+  .b-card{
+    background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 20px;box-shadow:var(--shadow);position:relative;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .b-card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+  .b-card .num{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;font-weight:700;
+    color:var(--accent-ink);background:var(--accent-soft);border-radius:8px;
+    display:inline-block;padding:4px 9px;margin-bottom:12px;
+  }
+  .b-card h3{font-size:16px;margin-bottom:8px}
+  .b-card p{font-size:14px;color:var(--ink-2)}
+  .build-payoff{
+    margin-top:26px;border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line));
+    background:var(--accent-soft);border-radius:var(--radius);padding:20px 22px;
+    font-size:15.5px;color:var(--ink);
+  }
+
+  /* ---------- chapters ---------- */
+  .toc{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+  @media (max-width:760px){.toc{grid-template-columns:1fr}}
+  .ch{
+    display:flex;gap:16px;background:var(--bg-2);border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);
+  }
+  .ch .c-no{
+    flex:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12px;font-weight:700;color:var(--ink-3);width:52px;padding-top:3px;
+  }
+  .ch .c-body h3{font-size:15px;margin-bottom:4px}
+  .ch .c-body p{font-size:13.5px;color:var(--ink-2)}
+  .ch.bonus{border-color:color-mix(in srgb,var(--accent) 50%,var(--line));grid-column:1/-1}
+  .ch.bonus .c-no{color:var(--accent-ink)}
+
+  /* ---------- honesty ---------- */
+  .honest{background:var(--bg-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .honest-inner{max-width:760px}
+  .honest p{margin-bottom:16px;color:var(--ink-2);font-size:16px}
+  .honest p strong{color:var(--ink)}
+  .rate-line{
+    border:1px solid var(--line);background:var(--bg-2);border-radius:12px;
+    padding:16px 20px;font-size:14.5px;color:var(--ink-2);margin-top:8px;
+  }
+  .rate-line .mono{color:var(--accent-ink);font-weight:700}
+
+  /* ---------- for / not-for ---------- */
+  .fit-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px}
+  @media (max-width:760px){.fit-grid{grid-template-columns:1fr}}
+  .fit{border-radius:var(--radius);padding:26px;border:1px solid var(--line);background:var(--bg-2);box-shadow:var(--shadow)}
+  .fit h3{font-size:17px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .fit ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .fit li{display:flex;gap:12px;font-size:14.5px;color:var(--ink-2)}
+  .fit .mk{flex:none;width:22px;height:22px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px}
+  .fit.yes .mk{background:var(--good-soft);color:var(--good)}
+  .fit.no .mk{background:var(--bad-soft);color:var(--bad)}
+  .fit.yes h3 .mk{width:26px;height:26px}
+  .fit.no h3 .mk{width:26px;height:26px}
+
+  /* ---------- offer ---------- */
+  .offer-card{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:36px;
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:var(--bg-2);box-shadow:var(--shadow-lg);
+  }
+  @media (max-width:820px){.offer-card{grid-template-columns:1fr}}
+  .offer-left{padding:34px}
+  .offer-left ul{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:20px}
+  .offer-left li{display:flex;gap:12px;font-size:15px;color:var(--ink-2)}
+  .offer-left li .mk{flex:none;color:var(--good);font-weight:800;margin-top:1px}
+  .offer-left li strong{color:var(--ink)}
+  .offer-right{
+    background:var(--bg-3);border-left:1px solid var(--line);
+    padding:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;
+  }
+  @media (max-width:820px){.offer-right{border-left:none;border-top:1px solid var(--line)}}
+  .offer-right img{max-width:150px;border-radius:8px;box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--line)}
+  .offer-price{font-size:44px;font-weight:800;letter-spacing:-.03em}
+  .offer-sub{font-size:13px;color:var(--ink-3);margin-bottom:14px}
+  .offer-right .btn{width:100%;max-width:280px}
+
+  /* ---------- faq ---------- */
+  .faq{max-width:760px;margin:36px auto 0}
+  details{border:1px solid var(--line);border-radius:12px;background:var(--bg-2);margin-bottom:12px;box-shadow:var(--shadow)}
+  summary{
+    cursor:pointer;font-weight:700;font-size:15.5px;padding:18px 20px;list-style:none;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;border-radius:12px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:20px;color:var(--accent-ink);flex:none;transition:transform .2s ease}
+  details[open] summary::after{transform:rotate(45deg)}
+  details .a{padding:0 20px 18px;font-size:14.5px;color:var(--ink-2)}
+
+  /* ---------- final ---------- */
+  .final{text-align:center;padding-bottom:96px}
+  .final h2{font-size:clamp(28px,4.5vw,44px)}
+  .final .lede{margin:0 auto 30px}
+  .disclaimer{
+    max-width:760px;margin:56px auto 0;font-size:12px;color:var(--ink-3);
+    border-top:1px solid var(--line);padding-top:20px;text-align:left;
+  }
+
+  footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--ink-3)}
+  .foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+  /* ---------- mobile sticky cta ---------- */
+  .sticky-cta{
+    position:fixed;bottom:0;left:0;right:0;z-index:60;display:none;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+  }
+  .sticky-cta .btn{width:100%}
+  @media (max-width:640px){
+    .sticky-cta.show{display:block}
+    body{padding-bottom:76px}
+  }
+
+  /* ---------- read chapter 1 free ---------- */
+  .ch1-card{
+    border:1px solid var(--line);border-radius:18px;background:var(--bg-2);
+    box-shadow:var(--shadow-lg);padding:38px 30px;max-width:820px;margin:0 auto;text-align:center;
+  }
+  .ch1-card > h2{margin-bottom:8px}
+  .ch1-card .ch1-sub{color:var(--ink-2);font-size:16px;margin-bottom:24px}
+  .btn-ghost{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    background:transparent;color:var(--accent-ink);border:1px solid var(--accent);
+    cursor:pointer;font-weight:700;font-size:15px;padding:13px 26px;border-radius:12px;
+    transition:background .15s ease,transform .15s ease;
+  }
+  .btn-ghost:hover{background:var(--accent-soft);transform:translateY(-2px)}
+  .btn-ghost:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .ch1-body{display:none;margin-top:38px;text-align:left}
+  .ch1-body.open{display:block}
+  .chapter{max-width:680px;margin:0 auto;line-height:1.7;font-size:16.5px}
+  .chapter p{margin:0 0 1.3em}
+  .chapter .ch-no{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+    display:block;margin-bottom:8px;
+  }
+  .chapter h3{font-size:clamp(24px,3.4vw,32px);margin:0 0 14px}
+  .chapter .ch-lede{font-style:italic;color:var(--ink-2);margin-bottom:1.6em}
+  .chapter hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+  .chapter h4{color:#2EE59D;font-size:19px;line-height:1.35;margin:2.1em 0 .8em}
+  [data-theme="light"] .chapter h4{color:#0E9B63}
+  .chapter blockquote{
+    font-style:italic;color:#1a73e8;font-size:19px;line-height:1.55;font-weight:600;
+    border-left:3px solid #1a73e8;padding-left:18px;margin:1.8em 0;
+  }
+  .ch1-close{
+    margin:2.6em auto 0;max-width:680px;border:1px solid var(--line);border-radius:14px;
+    background:var(--bg-3);padding:28px 24px;text-align:center;
+  }
+  .ch1-close h3{font-size:19px;margin-bottom:16px}
+  .ch1-toc{list-style:none;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 22px;padding:0}
+  .ch1-toc li{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
+    border:1px solid var(--line);background:var(--bg-2);color:var(--ink-2);
+    padding:6px 12px;border-radius:999px;
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .btn,.b-card,.cover-frame img{transition:none}
+  }
+</style>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="t">From Zero to AI Automation Engineer</span>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle light and dark mode">◐</button>
+      <a class="btn small" data-gumroad-action="buy" href="#" role="button">Get the book for <span data-gumroad-field="price">$37</span></a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="kicker">n8n Playbook for Career Switchers · Book 1</span>
+          <h1 id="hero-h">From zero to <em>AI Automation Engineer</em>, without a CS degree.</h1>
+          <p class="lede">I went from a business degree and a failed company to working full-time as an AI Automation Engineer, in under a year. No bootcamp. No tech background. This 79-page playbook is the exact path, rebuilt so you can walk it: by building, not just reading.</p>
+          <div class="hero-ctas">
+            <a class="btn" data-gumroad-action="buy" href="#" role="button">Start building today <span class="arr" aria-hidden="true">→</span></a>
+            <div class="price-tag">
+              <span class="p" data-gumroad-field="price">$37</span>
+              <span class="s">one-time · instant PDF download</span>
+            </div>
+          </div>
+          <div class="chips" aria-label="What's included at a glance">
+            <span class="chip">79 pages</span>
+            <span class="chip">40 real screenshots</span>
+            <span class="chip">3 ready-to-import workflows</span>
+            <span class="chip">15 AI prompt templates</span>
+            <span class="chip">reads on any device</span>
+          </div>
+        </div>
+        <div class="cover-col">
+          <div class="cover-frame">
+            <img src="https://public-files.gumroad.com/z30ajzn8mfshxppslmrkyeofxplk" width="670" height="1005" alt="Book cover: From Zero to AI Automation Engineer, The n8n Playbook for Career Switchers, Book 1">
+          </div>
+        </div>
+      </div>
+
+      <!-- workflow diagram -->
+      <div class="flow reveal" role="img" aria-label="Diagram of the workflow you build in the book: a web form feeds an AI sentiment analysis node, conditional logic routes negative feedback to an instant email alert, and everything is logged to a database.">
+        <div class="flow-title">// the system you'll build by the final chapter</div>
+        <div class="flow-track" aria-hidden="true">
+          <div class="node"><div class="n-icon">📝</div><div class="n-name">Live web form</div><div class="n-sub">zero code</div></div>
+          <div class="link-line"></div>
+          <div class="node hot"><div class="n-icon">🧠</div><div class="n-name">AI analysis</div><div class="n-sub">sentiment + topic</div></div>
+          <div class="link-line"></div>
+          <div class="node"><div class="n-icon">🔀</div><div class="n-name">IF: negative?</div><div class="n-sub">conditional logic</div></div>
+          <div class="link-line"></div>
+          <div class="node hot"><div class="n-icon">✉️</div><div class="n-name">Email alert</div><div class="n-sub">fires instantly</div></div>
+          <div class="link-line"></div>
+          <div class="node"><div class="n-icon">🗄️</div><div class="n-name">Database log</div><div class="n-sub">structured + timestamped</div></div>
+        </div>
+        <p class="flow-note">That's a real customer feedback system, the kind businesses pay real money for. You build it with your own hands, then turn it into your first portfolio piece.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" aria-labelledby="story-h">
+    <div class="wrap">
+      <div class="story-grid">
+        <div class="reveal">
+          <span class="kicker">Why listen to me?</span>
+          <h2 id="story-h">I'm not a computer science graduate. That's the point.</h2>
+          <blockquote>"Before 2022, I couldn't have told you what an API was. Today I work as an AI Automation Engineer for an international company, hired over candidates from all over the world."</blockquote>
+          <p class="attr">The author, writing from a small city in Indonesia, working fully remote</p>
+        </div>
+        <div class="fact-list reveal">
+          <div class="fact"><span class="f-mark">01</span><p><strong>Social studies track in high school.</strong> One of the kids who supposedly weren't "math people."</p></div>
+          <div class="fact"><span class="f-mark">02</span><p><strong>Business major, bankrupt company.</strong> It took my savings with it.</p></div>
+          <div class="fact"><span class="f-mark">03</span><p><strong>No tech industry around me.</strong> Learned everything in my second language.</p></div>
+          <div class="fact"><span class="f-mark">04</span><p><strong>Hired anyway, in under a year.</strong> Full-time, fully remote. If you're reading this from the US, you have every advantage I didn't have. This book removes the last excuse: not knowing where to start.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- READ CHAPTER 1 FREE -->
+  <section aria-labelledby="ch1-h">
+    <div class="wrap">
+      <div class="ch1-card reveal">
+        <h2 id="ch1-h">Read Chapter 1 free, right here</h2>
+        <p class="ch1-sub">No email, no download. Just read.</p>
+        <button class="btn-ghost" type="button" id="ch1Toggle" aria-expanded="false" aria-controls="ch1Body">Read the full chapter</button>
+        <div class="ch1-body" id="ch1Body">
+          <div class="chapter">
+            <span class="ch-no">Chapter 1</span>
+            <h3>Why You Should Read This Book</h3>
+            <p class="ch-lede">From a business major who couldn't tell you what an API was, to working as an AI Automation Engineer. In under a year.</p>
+            <hr>
+            <p>Let me be honest with you from the start.</p>
+            <p>I'm not a computer science graduate. I never went to a coding bootcamp. I'm not one of those people who's been programming since they were twelve. In high school, I took the social studies track, the one for kids who supposedly weren't "math people." In college, I majored in business. And before 2022, if you had asked me what an API was, I couldn't have told you.</p>
+            <p>Today, I work as an AI Automation Engineer for a company overseas. Full-time, fully remote, hired over candidates from all over the world. No CS degree. No bootcamp. No connections in tech. Just a laptop, an internet connection, and a skill I taught myself.</p>
+            <p>And here's the part that should get your attention: I did all of this from a small city in Indonesia, learning everything in my second language, with no tech industry around me and no one I could ask for help.</p>
+            <p>If you're reading this from the US, you have faster internet than I did, resources in your native language, and a tech job market on your doorstep. You have every advantage I didn't have.</p>
+            <p>So how did it happen? That's what this chapter is about.</p>
+            <h4>First, Let's Get One Thing Straight</h4>
+            <p>You've seen the ads. "Quit your 9-to-5." "Six figures in 90 days with AI." Some guy leaning on a rented Lamborghini.</p>
+            <p>I'm not going to promise you any of that. Anyone who promises you specific money on a specific timeline is selling you a fantasy. And honestly, if this book were hype, this would be the part where I show you screenshots of my bank account. I won't, because that's not what this is.</p>
+            <p>Here's what I <em>will</em> promise: this book teaches a real, in-demand technical skill, in the actual order I wish someone had taught me. If you put in consistent hours, you will finish it having <strong>built</strong> working AI automations, not watched someone else build them. What you earn from that skill depends on what you do with it. My job is to make sure the skill is real. That part, I can guarantee.</p>
+            <p>Okay. Now the story.</p>
+            <h4>The Unglamorous Story</h4>
+            <p>I graduated high school in 2015 from the social studies track. Went on to study asset management in business school. After graduating in 2019, I got a job as an accounting assistant. Right on script: a degree, an office job, an entry-level salary, nine-to-five. Nothing wrong with any of it.</p>
+            <p>Then 2020 happened. COVID hit the company I worked for hard. Things got more uncertain by the week, and eventually I made a call: instead of waiting to be laid off, I quit and tried to build something of my own.</p>
+            <p>I took my savings and started a small business. I spent two full years on it. Two years of grinding, trial and error, and hope slowly running out. In the end, the business failed.</p>
+            <p>I still remember the week I finally admitted it was over. Checking my account balance and doing the math on how many months of food I had left. Avoiding calls from people who'd ask how the business was going. At an age when I was "supposed" to have my life together, I had no job, no savings, and no plan.</p>
+            <p>That was my lowest point. And it's exactly where I made the decision that changed everything.</p>
+            <p>In early 2022, I started learning to code from free YouTube tutorials. Complete beginner. No IT background, no friends in tech to ask, no money for a bootcamp. Just me, a cheap secondhand laptop, and the internet. But I had one thing going for me: I had nothing left to lose. So I went all in.</p>
+            <p>I was consistent. Studied every day, practiced every day. And in September 2022, less than nine months after writing my first line of code, I got hired as a Frontend Engineer. A regular office job. I did that for three years.</p>
+            <p>During those three years as a developer, I kept noticing the same thing over and over: so many processes at every company are still painfully manual. Copy-pasting data between tools. Sending emails one by one. Building reports by hand. I got curious: how do you automate all of that? And that's how I found AI Automation.</p>
+            <p>In December 2024, I started learning it seriously. I discovered a tool called n8n (pronounced "n-eight-n"), a platform that connects your apps together and makes entire processes run automatically, with AI doing the thinking in the middle. At first I understood none of it. But I was hooked. I learned from documentation, from trial and error, from experimenting every night after work.</p>
+            <p>I built small projects. Tiny automations. Posted them on LinkedIn. Picked up a few freelance clients. But when I tried to land a full-time role in AI Automation? Brutal.</p>
+            <p>That was my second lowest point. Working my full-time developer job from morning to afternoon. Studying automation and doing freelance work from evening until midnight. Sending applications to dozens of companies. Making it to final interviews, and then getting the rejection email. Again and again. There was a stretch where I genuinely thought about quitting: <em>maybe this level just isn't for someone like me.</em></p>
+            <p>But I didn't stop. Kept learning, kept building, kept applying. And then one night in November 2025, an email came in that I read three times before I let myself believe it: an offer. Full-time, remote, AI Automation Engineer at an international company. They had candidates from everywhere. They picked the business major from Indonesia.</p>
+            <p>From the day I started learning AI Automation to the day I got that offer: less than one year.</p>
+            <p>Read that journey back: social studies kid, business degree, failed business owner, self-taught coder, three years in an office, studying nights and weekends, rejected over and over. And now, an AI Automation Engineer. If I could do it with every disadvantage stacked against me, you can absolutely do it.</p>
+            <blockquote>"If you can put in 2–3 focused hours a day, in six months you can build a skill that companies are actively struggling to hire for."</blockquote>
+            <h4>What Does This Work Actually Look Like?</h4>
+            <p>"AI Automation" sounds abstract, so let me make it concrete with a real example from my own work.</p>
+            <p>A company receives property documents all day long. Before automation, a person had to open each document, figure out what type it was, label it, check whether it was a duplicate, and file it in the right folder. Fifteen to twenty minutes per document. Thirty documents a day. That's one entire workday, every day, spent sorting files.</p>
+            <p>I built a workflow (an automated step-by-step process) where a document comes in, AI reads it, labels it, checks for duplicates, and files it. In seconds, untouched by human hands. One workday of labor, reduced to nothing, permanently.</p>
+            <p>That's the job: you find a slow, repetitive, expensive process, and you make it disappear. Businesses don't pay for this because it's trendy. They pay because it saves them real money every single month. And here's what the market pays for people who can do it: on Upwork, AI automation freelancers were averaging <strong>$85–120 per hour</strong> in early 2026, with independent consultants charging $150 an hour and up. A single workflow build, the kind you'll be capable of after finishing this book and practicing, typically sells for $200 to $1,500.</p>
+            <p>You'll build a simpler version of exactly this kind of system in Chapter 7. Not read about it. Build it.</p>
+            <h4>Why AI Automation?</h4>
+            <p>You've heard about AI. You've probably used ChatGPT. But for a lot of people, it all still feels like someone else's world. Something for engineers, for Silicon Valley, for people with the "right" degree.</p>
+            <p>Here's what makes this specific skill different:</p>
+            <p><strong>1. Demand is exploding faster than supply.</strong> Every company is under pressure to adopt AI, but almost none of them have people who can actually connect AI to their real business processes. The number of businesses that need automation is growing far faster than the number of people who can build it. That gap is your opportunity, and it's open <em>right now</em>.</p>
+            <p><strong>2. You don't need a CS degree. Your work experience is actually an asset.</strong> I'm living proof. Tools like n8n are visual: you build automations by connecting blocks on a screen, not by writing hundreds of lines of code. What you actually need is logic and an understanding of how businesses work. If you've ever worked in accounting, admin, sales, HR, teaching, retail, then you already understand business processes better than most engineers do. You know where the painful, repetitive work hides, because you've <em>done</em> it. That's your unfair advantage, not your weakness.</p>
+            <p><strong>3. It's remote-native work.</strong> Everything runs in the cloud. You can do this job from anywhere with an internet connection, and companies hiring for these roles are already used to remote workers. No relocation required.</p>
+            <p><strong>4. You can start earning before you're "job ready."</strong> This isn't a skill where you study for two years and then finally look for work. Every automation you learn to build in this book is something a real business would pay for. Freelance projects, consulting, selling templates: the monetization paths open up early (Chapter 8 covers exactly how).</p>
+            <p>And one more thing worth saying out loud: people in the US regularly pay $15,000–$20,000 for coding bootcamps to break into tech. The path in this book costs you a laptop you already own and tools with free tiers. The barrier isn't money. It's consistency.</p>
+            <h4>Who Is This Book For?</h4>
+            <p>I wrote this book for you if:</p>
+            <p><strong>You don't have a tech background but want in.</strong> Maybe you're in accounting like I was. Or admin, marketing, HR, customer service, teaching. Or a recent grad who has no idea what's next. You don't need a computer science degree. If a business major from the social studies track could do this, so can you.</p>
+            <p><strong>You want to switch into tech but every path looks blocked.</strong> Every job posting wants a degree or five years of experience. Every bootcamp costs five figures. You keep hearing "just learn to code" but don't know where that actually leads. This book gives you a clear roadmap: from absolute zero to a skill you can put on a resume, show in a portfolio, and sell.</p>
+            <p><strong>You've watched a hundred AI tutorials and built nothing.</strong> YouTube is full of hype and scattered tutorials that don't connect to each other. Here, everything is arranged in one deliberate sequence. You follow it step by step, and by the end you've actually <em>built</em> something.</p>
+            <p><strong>You're employed but feel stuck.</strong> The salary's flat, the role's a dead end, and you want a skill that makes you stand out, or gives you an exit. AI Automation is that skill.</p>
+            <h4>Picture Yourself Six Months From Now</h4>
+            <p>Let me tell you where this road actually leads, because I've walked it and I've watched others walk it.</p>
+            <p>Six months from now, you open your laptop after dinner. Not to doomscroll, but to check on a workflow you built that's been running on its own all day. You've finished this book. You've built the feedback system in Chapter 7 and two or three projects of your own. Your LinkedIn headline says something it never said before. Maybe you've landed your first freelance project: a local business paid you a few hundred dollars to automate something that was eating three hours of their day, and it took you an afternoon.</p>
+            <p>You're not "job ready" by some gatekeeper's definition. You're something better: you're a person who <em>builds things that work</em>, with the portfolio to prove it. That's the position every opportunity comes from. The interviews, the clients, the confidence. And it starts with the chapter after this one.</p>
+            <h4>One Thing I Need You to Believe</h4>
+            <p>Before you move on, hold on to this:</p>
+            <blockquote>"You don't need to be a genius. You don't need a tech background. You need consistency, a willingness to learn, and the stubbornness to not quit when you get stuck. This book handles the rest."</blockquote>
+            <p>I've been through every phase you're afraid of. Confused, stuck, rejected, feeling like I wasn't smart enough for this. I kept going anyway. And now I'm somewhere I once believed was impossible for someone like me.</p>
+            <p>If I could do it, from where I started, with what I had, then you can too. I mean that.</p>
+            <p>Okay. Enough backstory. In the next chapter, we get into the material: I'll explain what AI and automation actually are, in language you'll actually understand.</p>
+          </div>
+          <div class="ch1-close">
+            <h3>That's Chapter 1 of 8. The building starts in Chapter 4.</h3>
+            <ul class="ch1-toc">
+              <li>Ch 2 Concepts</li>
+              <li>Ch 3 Prereqs</li>
+              <li>Ch 4 Meet n8n</li>
+              <li>Ch 5 First Real Workflow</li>
+              <li>Ch 6 Add AI</li>
+              <li>Ch 7 The Mini Project</li>
+              <li>Ch 8 Career Roadmap</li>
+              <li>Bonus: templates and cheat sheets</li>
+            </ul>
+            <a class="btn" data-gumroad-action="buy" href="#" role="button">Keep reading (<span data-gumroad-field="price">$37</span>)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU'LL BUILD -->
+  <section aria-labelledby="build-h">
+    <div class="wrap">
+      <span class="kicker">Not a book you read. A book you build with.</span>
+      <h2 id="build-h">What you'll actually build</h2>
+      <p class="lede">By the final project, you will have created all of this with your own hands:</p>
+      <div class="build-grid">
+        <div class="b-card reveal"><span class="num">BUILD 1</span><h3>A live web form</h3><p>Anyone on the internet can use it. Zero code written.</p></div>
+        <div class="b-card reveal"><span class="num">BUILD 2</span><h3>An AI that reads every submission</h3><p>It judges the sentiment and topic of each message automatically.</p></div>
+        <div class="b-card reveal"><span class="num">BUILD 3</span><h3>A conditional system</h3><p>Logic that decides when a situation needs a human.</p></div>
+        <div class="b-card reveal"><span class="num">BUILD 4</span><h3>An automatic email alert</h3><p>Fires the moment negative feedback arrives.</p></div>
+        <div class="b-card reveal"><span class="num">BUILD 5</span><h3>A structured database</h3><p>Captures everything, structured and timestamped.</p></div>
+      </div>
+      <p class="build-payoff reveal"><strong>Then the book turns it into proof.</strong> The final pages show you exactly how to package this as your first portfolio piece: screenshots, a three-sentence case study, and a LinkedIn post.</p>
+    </div>
+  </section>
+
+  <!-- CHAPTERS -->
+  <section aria-labelledby="toc-h" style="padding-top:0">
+    <div class="wrap">
+      <span class="kicker">79 pages · 40 real screenshots</span>
+      <h2 id="toc-h">What's inside</h2>
+      <div class="toc">
+        <div class="ch reveal"><span class="c-no">CH 1–2</span><div class="c-body"><h3>The story &amp; the landscape</h3><p>My path, and what AI Automation actually is, in plain English.</p></div></div>
+        <div class="ch reveal"><span class="c-no">CH 3</span><div class="c-body"><h3>The only prerequisites you need</h3><p>All free. Plus the "get unstuck" routine that separates people who learn tech from people who quit.</p></div></div>
+        <div class="ch reveal"><span class="c-no">CH 4</span><div class="c-body"><h3>n8n from absolute zero</h3><p>Your account, the interface, and your first working workflow.</p></div></div>
+        <div class="ch reveal"><span class="c-no">CH 5</span><div class="c-body"><h3>Your first useful automation</h3><p>A live form feeding Google Sheets, genuinely useful from day one.</p></div></div>
+        <div class="ch reveal"><span class="c-no">CH 6</span><div class="c-body"><h3>Adding the AI brain</h3><p>API keys, prompt engineering, and automatic sentiment analysis.</p></div></div>
+        <div class="ch reveal"><span class="c-no">CH 7</span><div class="c-body"><h3>The full mini project</h3><p>AI analysis, conditional logic, email alerts, and a database, all wired together.</p></div></div>
+        <div class="ch reveal"><span class="c-no">CH 8</span><div class="c-body"><h3>The roadmap</h3><p>Getting hired, honest market rates, and your first 30 days.</p></div></div>
+        <div class="ch bonus reveal"><span class="c-no">BONUS</span><div class="c-body"><h3>The toolkit you'll use for years</h3><p>Node and expression cheat sheets, 15 ready-to-use AI prompt templates, and a readiness checklist for the Intermediate level.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HONESTY -->
+  <section class="honest" aria-labelledby="honest-h">
+    <div class="wrap honest-inner">
+      <span class="kicker">Read this before you buy</span>
+      <h2 id="honest-h">What this book will <u>not</u> do</h2>
+      <p>You've seen the ads. <strong>"Six figures in 90 days with AI."</strong> Some guy leaning on a rented Lamborghini.</p>
+      <p>This book makes no income promises, because anyone who promises you specific money on a specific timeline is selling you a fantasy.</p>
+      <p><strong>What I promise instead:</strong> a real, in-demand technical skill, taught in the exact order I wish someone had taught me, by someone who actually does this work for a living. What you earn from the skill depends on what you do with it.</p>
+      <div class="rate-line reveal">
+        <strong>For context only, not as a promise:</strong> AI automation freelancers on Upwork were averaging <span class="mono">$85–120/hour</span> in early 2026, and a single workflow build typically sells for <span class="mono">$200–1,500</span>. The demand is real. The work is real. The rest is up to you.
+      </div>
+    </div>
+  </section>
+
+  <!-- FIT -->
+  <section aria-labelledby="fit-h">
+    <div class="wrap">
+      <span class="kicker">An honest fit check</span>
+      <h2 id="fit-h">Is this for you?</h2>
+      <div class="fit-grid">
+        <div class="fit yes reveal">
+          <h3><span class="mk" aria-hidden="true">✓</span> This is for you if…</h3>
+          <ul>
+            <li><span class="mk" aria-hidden="true">✓</span><span>You work in admin, accounting, sales, HR, teaching, retail, or anything non-technical, and want into tech without a degree or a $15,000 bootcamp.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span>You've watched a hundred AI tutorials and built nothing.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span>You're employed but stuck, and want a skill that makes you stand out or gives you an exit.</span></li>
+          </ul>
+        </div>
+        <div class="fit no reveal">
+          <h3><span class="mk" aria-hidden="true">✗</span> This is <em>not</em> for you if…</h3>
+          <ul>
+            <li><span class="mk" aria-hidden="true">✗</span><span>You're an experienced developer. You'll find the pace slow, so wait for Book 2.</span></li>
+            <li><span class="mk" aria-hidden="true">✗</span><span>You're looking for passive income with no work.</span></li>
+            <li><span class="mk" aria-hidden="true">✗</span><span>You won't put in 2–3 focused hours a day.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFER -->
+  <section aria-labelledby="offer-h" style="padding-top:0">
+    <div class="wrap">
+      <span class="kicker">Everything you get</span>
+      <h2 id="offer-h">One price. The whole toolkit.</h2>
+      <div class="offer-card reveal">
+        <div class="offer-left">
+          <h3 style="font-size:18px" data-gumroad-field="name">From Zero to AI Automation Engineer: The n8n Playbook for Career Switchers (Book 1)</h3>
+          <ul>
+            <li><span class="mk" aria-hidden="true">✓</span><span><strong>The complete 79-page PDF</strong>, readable on any device.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span><strong>BONUS: 3 ready-to-import n8n workflow files</strong>, the exact systems from Chapters 5–7, so you can inspect or reuse the finished builds.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span><strong>40 real screenshots</strong> from real builds, not mockups.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span><strong>15 copy-paste AI prompt templates</strong> for business use cases.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span><strong>Node &amp; expression cheat sheets</strong> you'll use for years.</span></li>
+            <li><span class="mk" aria-hidden="true">✓</span><span><strong>A readiness checklist</strong> for the Intermediate level.</span></li>
+          </ul>
+        </div>
+        <div class="offer-right">
+          <img src="https://public-files.gumroad.com/z30ajzn8mfshxppslmrkyeofxplk" width="670" height="1005" alt="" aria-hidden="true">
+          <div class="offer-price" data-gumroad-field="price">$37</div>
+          <div class="offer-sub">one-time payment · instant download</div>
+          <a class="btn" data-gumroad-action="buy" href="#" role="button">I want this <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section aria-labelledby="faq-h" style="padding-top:0">
+    <div class="wrap">
+      <div style="text-align:center">
+        <span class="kicker">Questions</span>
+        <h2 id="faq-h">Before you ask</h2>
+      </div>
+      <div class="faq">
+        <details class="reveal">
+          <summary>Do I need any coding background?</summary>
+          <div class="a">No. The book assumes you're starting from absolute zero. Before 2022 the author couldn't have told you what an API was. The first project is a live web form built with zero code, and every step is shown with real screenshots.</div>
+        </details>
+        <details class="reveal">
+          <summary>What tools do I need, and do they cost money?</summary>
+          <div class="a">Chapter 3 covers the only prerequisites you need, all of them free. Chapter 4 then walks you through setting up your n8n account and the interface from scratch.</div>
+        </details>
+        <details class="reveal">
+          <summary>What if I get stuck?</summary>
+          <div class="a">Chapter 3 teaches the "get unstuck" routine, the habit that separates people who learn tech from people who quit. And the 3 bonus workflow files are the exact finished systems from Chapters 5–7, so you can always import a working build and compare it against yours.</div>
+        </details>
+        <details class="reveal">
+          <summary>How much time does it take?</summary>
+          <div class="a">Plan on 2–3 focused hours a day. If you can't put that in, this book honestly isn't for you. It's a book you build with, not skim.</div>
+        </details>
+        <details class="reveal">
+          <summary>I'm an experienced developer. Should I buy it?</summary>
+          <div class="a">Probably not yet. You'll find the pace slow. This is Book 1, written for career switchers starting from zero. Wait for Book 2.</div>
+        </details>
+        <details class="reveal">
+          <summary>Will this make me money?</summary>
+          <div class="a">No promises. Anyone who promises specific money on a specific timeline is selling a fantasy. What it teaches is a real, in-demand technical skill. For context only: AI automation freelancers on Upwork were averaging $85–120/hour in early 2026. What you earn from the skill depends on what you do with it.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final" aria-labelledby="final-h" style="padding-top:8px">
+    <div class="wrap">
+      <span class="kicker">Book 1 · The n8n Playbook for Career Switchers</span>
+      <h2 id="final-h">The path exists. Someone finally wrote it down.</h2>
+      <p class="lede">Stop watching tutorials. Start with Chapter 1, and by the final project you'll have a working AI system, and your first portfolio piece, built with your own hands.</p>
+      <a class="btn" data-gumroad-action="buy" href="#" role="button">Get the playbook for <span data-gumroad-field="price">$37</span> <span class="arr" aria-hidden="true">→</span></a>
+      <p class="under-btn">Instant PDF download · 79 pages · 3 bonus n8n workflow files included</p>
+
+      <div class="disclaimer">
+        <strong>Earnings Disclaimer:</strong> This book teaches technical skills. Any income figures mentioned are publicly available market rates cited for context only, and are not a promise or guarantee of your results. Your outcomes depend on your effort, experience, and market conditions. Most people who buy educational products do not complete them or apply them.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 · From Zero to AI Automation Engineer</span>
+    <span class="mono">Built by a career switcher, for career switchers.</span>
+  </div>
+</footer>
+
+<!-- mobile sticky buy bar -->
+<div class="sticky-cta" id="stickyCta">
+  <a class="btn" data-gumroad-action="buy" href="#" role="button">Get the book for <span data-gumroad-field="price">$37</span></a>
+</div>
+
+<script>
+(function(){
+  // Theme toggle: dark (navy) is the default; button flips it for this visit.
+  var root = document.documentElement;
+  var btn = document.getElementById("themeToggle");
+  function current(){
+    return root.getAttribute("data-theme") || "dark";
+  }
+  if (btn) {
+    btn.addEventListener("click", function(){
+      root.setAttribute("data-theme", current() === "dark" ? "light" : "dark");
+    });
+  }
+
+  // Read Chapter 1 free: expand/collapse.
+  var ch1Btn = document.getElementById("ch1Toggle");
+  var ch1Body = document.getElementById("ch1Body");
+  if (ch1Btn && ch1Body) {
+    ch1Btn.addEventListener("click", function(){
+      var open = ch1Body.classList.toggle("open");
+      ch1Btn.setAttribute("aria-expanded", open ? "true" : "false");
+      ch1Btn.textContent = open ? "Hide the chapter" : "Read the full chapter";
+      if (!open) { ch1Btn.scrollIntoView({ block: "center" }); }
+    });
+  }
+
+  // Scroll-reveal animations (skipped for reduced motion).
+  var reduced = false;
+  try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch(e){}
+  var items = document.querySelectorAll(".reveal");
+  if (!reduced && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    items.forEach(function(el){ io.observe(el); });
+  } else {
+    items.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  // Mobile sticky buy bar: appears after the hero scrolls out of view.
+  var sticky = document.getElementById("stickyCta");
+  var hero = document.querySelector(".hero");
+  if (sticky && hero && "IntersectionObserver" in window) {
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        sticky.classList.toggle("show", !en.isIntersecting);
+      });
+    }, { threshold: 0 });
+    io2.observe(hero);
+  } else if (sticky) {
+    sticky.classList.add("show");
+  }
+})();
+</script>
